@@ -134,6 +134,7 @@ class FlightTab(Tab, flight_tab_class):
         self.maxYawRate.valueChanged.connect(self.maxYawRateChanged)
         self.uiSetupReadySignal.connect(self.uiSetupReady)
         self.clientXModeCheckbox.toggled.connect(self.changeXmode)
+        self.HoldThrustCheckbox.toggled.connect(self.holdThrustChanged)
         self.isInCrazyFlightmode = False
         self.uiSetupReady()
 
@@ -412,6 +413,12 @@ class FlightTab(Tab, flight_tab_class):
             Config().set("slew_limit", self.slewEnableLimit.value())
             Config().set("slew_rate", self.thrustLoweringSlewRateLimit.value())
 
+    def holdThrustChanged(self):
+        self.helper.inputDeviceReader.hold_thrust = self.HoldThrustCheckbox.isChecked()
+        logger.info("Throttle hold enabled: %s", self.HoldThrustCheckbox.isChecked())
+        if (self.isInCrazyFlightmode is True):
+            Config().set("hold_thrust", self.HoldThrustCheckbox.isChecked())
+
     def maxYawRateChanged(self):
         logger.debug("MaxYawrate changed to %d", self.maxYawRate.value())
         self.helper.inputDeviceReader.max_yaw_rate = self.maxYawRate.value()
@@ -489,6 +496,7 @@ class FlightTab(Tab, flight_tab_class):
             self.thrustLoweringSlewRateLimit.setValue(
                 Config().get("slew_rate"))
             self.maxYawRate.setValue(Config().get("max_yaw"))
+            self.HoldThrustCheckbox.setChecked(Config().get("hold_thrust"))
             self.isInCrazyFlightmode = True
 
         if (item == 0):
@@ -501,6 +509,7 @@ class FlightTab(Tab, flight_tab_class):
         self.thrustLoweringSlewRateLimit.setEnabled(newState)
         self.slewEnableLimit.setEnabled(newState)
         self.maxYawRate.setEnabled(newState)
+        self.HoldThrustCheckbox.setEnabled(newState)
 
     @pyqtSlot(bool)
     def changeXmode(self, checked):

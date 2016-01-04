@@ -168,6 +168,34 @@ class InputReaderInterface(object):
             if althold and self.input.has_pressure_sensor:
                 thrust = int(round(InputReaderInterface.deadband(thrust, 0.2) *
                                    32767 + 32767))  # Convert to uint16
+            elif self.input.hold_thrust:
+                # Scale the thrust down
+                thrust *= 0.25
+
+                # The default action is to add (or substract if negativ)
+                limited_thrust = self._prev_thrust + thrust
+
+                if limited_thrust > self.input.max_thrust:
+                    limited_thrust = self.input.max_thrust
+
+                if emergency_stop or thrust < self.thrust_stop_limit:
+                    # If the thrust have been pulled down or the
+                    # emergency stop has been activated then force 0
+                    self._prev_thrust = 0
+                    limited_thrust = 0
+
+                # For the next iteration set the previous thrust to the limited
+                # one
+                self._prev_thrust = limited_thrust
+
+                # Lastly make sure we're following the "minimum" thrust setting
+                if limited_thrust < self.input.min_thrust:
+                    self._prev_thrust = self.input.min_thrust
+                    limited_thrust = self.input.min_thrust
+
+                self._last_time = time()
+
+                thrust = limited_thrust
             else:
                 # Scale the thrust to percent (it's between 0 and 1)
                 thrust *= 100

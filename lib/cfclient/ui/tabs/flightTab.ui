@@ -286,6 +286,13 @@
               </property>
              </widget>
             </item>
+            <item row="6" column="0">
+             <widget class="QCheckBox" name="HoldThrustCheckbox">
+              <property name="text">
+               <string>Hold Thrust</string>
+              </property>
+             </widget>
+            </item>
             <item row="4" column="0">
              <widget class="QLabel" name="label_31">
               <property name="text">

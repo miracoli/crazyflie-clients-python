@@ -84,6 +84,7 @@ class JoystickReader(object):
         self._thrust_slew_rate = 0
         self.thrust_slew_enabled = False
         self.thrust_slew_limit = 0
+        self.hold_thrust = False
         self.has_pressure_sensor = False
 
         self.max_rp_angle = 0
