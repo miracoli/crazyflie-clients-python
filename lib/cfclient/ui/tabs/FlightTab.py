@@ -41,7 +41,7 @@ from PyQt4.QtGui import QMessageBox
 
 from cflib.crazyflie import Crazyflie
 
-from cfclient.ui.widgets.ai import AttitudeIndicator
+#from cfclient.ui.widgets.ai import AttitudeIndicator
 
 from cfclient.utils.config import Config
 from cflib.crazyflie.log import Log, LogVariable, LogConfig
@@ -200,8 +200,8 @@ class FlightTab(Tab, flight_tab_class):
         self.logBaro = None
         self.logAltHold = None
 
-        self.ai = AttitudeIndicator()
-        self.verticalLayout_4.addWidget(self.ai)
+        #self.ai = AttitudeIndicator()
+        #self.verticalLayout_4.addWidget(self.ai)
         self.splitter.setSizes([1000, 1])
 
         self.targetCalPitch.setValue(Config().get("trim_pitch"))
@@ -266,7 +266,7 @@ class FlightTab(Tab, flight_tab_class):
     def _baro_data_received(self, timestamp, data, logconf):
         if self.isVisible():
             self.actualASL.setText(("%.2f" % data["baro.aslLong"]))
-            self.ai.setBaro(data["baro.aslLong"])
+            #self.ai.setBaro(data["baro.aslLong"])
 
     def _althold_data_received(self, timestamp, data, logconf):
         if self.isVisible():
@@ -275,11 +275,11 @@ class FlightTab(Tab, flight_tab_class):
                 if not self.targetASL.isEnabled():
                     self.targetASL.setEnabled(True)
                 self.targetASL.setText(("%.2f" % target))
-                self.ai.setHover(target)
+                #self.ai.setHover(target)
             elif self.targetASL.isEnabled():
                 self.targetASL.setEnabled(False)
                 self.targetASL.setText("Not set")
-                self.ai.setHover(0)
+                #self.ai.setHover(0)
 
     def _imu_data_received(self, timestamp, data, logconf):
         if self.isVisible():
@@ -290,8 +290,8 @@ class FlightTab(Tab, flight_tab_class):
                                       self.thrustToPercentage(
                                           data["stabilizer.thrust"]))
 
-            self.ai.setRollPitch(-data["stabilizer.roll"],
-                                 data["stabilizer.pitch"])
+            #self.ai.setRollPitch(-data["stabilizer.roll"],
+             #                    data["stabilizer.pitch"])
 
     def connected(self, linkURI):
         # IMU & THRUST
@@ -370,7 +370,7 @@ class FlightTab(Tab, flight_tab_class):
                         logger.warning(str(e))
 
     def disconnected(self, linkURI):
-        self.ai.setRollPitch(0, 0)
+        #self.ai.setRollPitch(0, 0)
         self.actualM1.setValue(0)
         self.actualM2.setValue(0)
         self.actualM3.setValue(0)
